@@ -20,7 +20,7 @@ addNewUrl = (req, res) => {
         });
     }
     else{
-        res.status(200);
+        res.status(304);
         console.log('Url founded in DB');
         res.send(URL_DB[index]);
     }
