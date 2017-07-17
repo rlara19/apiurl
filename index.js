@@ -12,8 +12,8 @@ app.get('/_health', function(req, res) {
 app.use(bodyParser.json({ type : 'application/json'}));
 
 
-app.post('/addUrl', urlmethods.addNewUrl);
-app.get('/getUrls', urlmethods.getUrls);
+app.post('/urls', urlmethods.addNewUrl);
+app.get('/urls', urlmethods.getUrls);
 
 
 app.listen(3000);

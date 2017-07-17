@@ -12,7 +12,7 @@ addNewUrl = (req, res) => {
             longUrl : req.body.url,
             shortUrl : short
         });
-        res.status(200);
+        res.status(201);
         console.log('Url added to DB');
         res.send({
             "longUrl" : req.body.url,
