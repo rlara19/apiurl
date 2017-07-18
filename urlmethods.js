@@ -1,7 +1,7 @@
 const URL_DB = [];
 
 
-const addNewUrl = (req, res) => {
+module.exports.addNewUrl = (req, res) => {
   const index = URL_DB.findIndex(current => (current.longUrl === req.body.url));
   if (index < 0) {
     const short = Math.random().toString(36).substring(2, 7);
@@ -20,11 +20,7 @@ const addNewUrl = (req, res) => {
   }
 };
 
-const getUrls = (req, res) => {
+module.exports.getUrls = (req, res) => {
   res.status(200);
   res.send(URL_DB);
 };
-
-
-module.exports.addNewUrl = addNewUrl;
-module.exports.getUrls = getUrls;
