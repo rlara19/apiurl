@@ -1,4 +1,25 @@
+const Sequelize = require('sequelize');
+
+const sequelize = new Sequelize('postgres', 'urluser', 'password', {
+  username: 'urluser',
+  password: 'password',
+  host: 'localhost',
+  port: '5432',
+  dialect: 'postgres',
+});
+
 const URL_DB = [];
+
+sequelize.sync();
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been establishe successfully.');
+  })
+  .catch((err) => {
+    console.error('Unable to connect to the database: ', err);
+  });
 
 
 module.exports.addNewUrl = (req, res) => {
