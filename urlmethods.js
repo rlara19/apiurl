@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const URL = require('./models.js');
 
 const sequelize = new Sequelize('url_db', 'root', null, {
+  host: 'localhost',
+  port: '3306',
   dialect: 'mysql',
 });
 
@@ -18,30 +20,19 @@ sequelize
 
 
 module.exports.addNewUrl = (req, res) => {
-  const index = URL_DB.findIndex(current => (current.longUrl === req.body.url));
-  if (index < 0) {
-    const short = Math.random().toString(36).substring(2, 7);
-    URL.count().then((c) => {
-      URL.create({ URL_id: `${c + 1}`,
-        longURL: req.body.url,
-        shortURL: short,
-      })
-      .then(url => res.satatus(201).send(url))
-      .catch(err => res.status(400).send(err));
+  const short = Math.random().toString(36).substring(2, 7);
+  URL(sequelize, Sequelize.DataTypes).count().then((c) => {
+    URL(sequelize, Sequelize.DataTypes).findOrCreate({
+      where: { longURL: req.body.url },
+      defaults: { URL_id: `${c + 1}`, shortURL: short },
+    }).spread((url, created) => {
+      if (created) {
+        res.status(201).send(url.dataValues);
+      } else {
+        res.status(304).send(url);
+      }
     });
-    URL_DB.push({
-      longUrl: req.body.url,
-      shortUrl: short,
-    });
-    res.status(201);
-    res.send({
-      longUrl: req.body.url,
-      shortUrl: short,
-    });
-  } else {
-    res.status(304);
-    res.send(URL_DB[index]);
-  }
+  });
 };
 
 module.exports.getUrls = (req, res) => {
