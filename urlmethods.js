@@ -9,8 +9,7 @@ const sequelize = new Sequelize('url_db', 'root', null, {
 
 const URL_DB = [];
 
-sequelize
-  .authenticate()
+sequelize.authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
   })
@@ -21,7 +20,7 @@ sequelize
 
 module.exports.addNewUrl = (req, res) => {
   const short = Math.random().toString(36).substring(2, 7);
-  URL(sequelize, Sequelize.DataTypes).count().then((c) => {
+  URL(sequelize, Sequelize.DataTypes).max('URL_id').then((c) => {
     URL(sequelize, Sequelize.DataTypes).findOrCreate({
       where: { longURL: req.body.url },
       defaults: { URL_id: `${c + 1}`, shortURL: short },
@@ -36,6 +35,7 @@ module.exports.addNewUrl = (req, res) => {
 };
 
 module.exports.getUrls = (req, res) => {
-  res.status(200);
-  res.send(URL_DB);
+  URL(sequelize, Sequelize.DataTypes).findAll().then((urls) => {
+    res.status(200).send(urls);
+  });
 };
