@@ -52,11 +52,11 @@ module.exports.redirect = (req, res) => {
   })
   .then((c) => {
     if (c.length > 0) {
-      console.log('Founded ' + c[0].longURL);
+      console.log(`Founded  ${c[0].longURL}`);
       res.redirect(c[0].longURL);
     } else {
       console.log(c);
-      //res.status(400).send('URL not found in DB');
+      res.status(400).send('URL not found in DB');
     }
   });
 };
