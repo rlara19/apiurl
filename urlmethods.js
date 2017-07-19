@@ -1,10 +1,13 @@
 const Sequelize = require('sequelize');
 const URL = require('./models.js');
+const config = require('config');
 
-const sequelize = new Sequelize('url_db', 'root', null, {
-  host: 'localhost',
-  port: '3306',
-  dialect: 'mysql',
+const db = config.get('dbConfig');
+
+const sequelize = new Sequelize(db.name, db.user, db.password, {
+  host: db.host,
+  port: db.port,
+  dialect: db.dialect,
 });
 
 sequelize.authenticate()
