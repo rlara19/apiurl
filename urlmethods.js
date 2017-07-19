@@ -39,3 +39,11 @@ module.exports.getUrls = (req, res) => {
     res.status(200).send(urls);
   });
 };
+
+module.exports.deleteUrl = (req, res) => {
+  console.log(req.body.url);
+  URL(sequelize, Sequelize.DataTypes).destroy({
+    where: { longUrl: req.body.url },
+  });
+  res.status(200).send(req.body.url);
+};
