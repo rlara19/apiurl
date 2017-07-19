@@ -16,4 +16,6 @@ app.post('/urls', urlmethods.addNewUrl);
 app.get('/urls', urlmethods.getUrls);
 app.delete('/urls', urlmethods.deleteUrl);
 
+app.get('/tinyurl/:turl', urlmethods.redirect);
+
 app.listen(3000);

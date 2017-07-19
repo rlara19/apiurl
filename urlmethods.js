@@ -7,8 +7,6 @@ const sequelize = new Sequelize('url_db', 'root', null, {
   dialect: 'mysql',
 });
 
-const URL_DB = [];
-
 sequelize.authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
@@ -46,4 +44,19 @@ module.exports.deleteUrl = (req, res) => {
     where: { longUrl: req.body.url },
   });
   res.status(200).send(req.body.url);
+};
+
+module.exports.redirect = (req, res) => {
+  URL(sequelize, Sequelize.DataTypes).findAll({
+    where: { shortURL: req.params.turl },
+  })
+  .then((c) => {
+    if (c.length > 0) {
+      console.log('Founded ' + c[0].longURL);
+      res.redirect(c[0].longURL);
+    } else {
+      console.log(c);
+      //res.status(400).send('URL not found in DB');
+    }
+  });
 };
