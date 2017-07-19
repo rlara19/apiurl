@@ -15,12 +15,16 @@ sequelize.authenticate()
     console.error('Unable to connect to the database: ', err);
   });
 
+function addHTTPtoURL(url) {
+  if (url.substr(0, 4) === 'http') return url;
+  return `http://${url}`;
+}
 
 module.exports.addNewUrl = (req, res) => {
   const short = Math.random().toString(36).substring(2, 7);
   URL(sequelize, Sequelize.DataTypes).max('URL_id').then((c) => {
     URL(sequelize, Sequelize.DataTypes).findOrCreate({
-      where: { longURL: req.body.url },
+      where: { longURL: addHTTPtoURL(req.body.url) },
       defaults: { URL_id: `${c + 1}`, shortURL: short },
     }).spread((url, created) => {
       if (created) {
@@ -41,7 +45,7 @@ module.exports.getUrls = (req, res) => {
 module.exports.deleteUrl = (req, res) => {
   console.log(req.body.url);
   URL(sequelize, Sequelize.DataTypes).destroy({
-    where: { longUrl: req.body.url },
+    where: { longUrl: addHTTPtoURL(req.body.url) },
   });
   res.status(200).send(req.body.url);
 };
@@ -53,10 +57,11 @@ module.exports.redirect = (req, res) => {
   .then((c) => {
     if (c.length > 0) {
       console.log(`Founded  ${c[0].longURL}`);
-      res.redirect(c[0].longURL);
+      res.redirect(addHTTPtoURL(c[0].longURL));
     } else {
       console.log(c);
       res.status(400).send('URL not found in DB');
     }
   });
 };
+
