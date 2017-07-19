@@ -1,21 +1,16 @@
 const Sequelize = require('sequelize');
+const URL = require('./models.js');
 
-const sequelize = new Sequelize('postgres', 'urluser', 'password', {
-  username: 'urluser',
-  password: 'password',
-  host: 'localhost',
-  port: '5432',
-  dialect: 'postgres',
+const sequelize = new Sequelize('url_db', 'root', null, {
+  dialect: 'mysql',
 });
 
 const URL_DB = [];
 
-sequelize.sync();
-
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection has been establishe successfully.');
+    console.log('Connection has been established successfully.');
   })
   .catch((err) => {
     console.error('Unable to connect to the database: ', err);
@@ -26,6 +21,14 @@ module.exports.addNewUrl = (req, res) => {
   const index = URL_DB.findIndex(current => (current.longUrl === req.body.url));
   if (index < 0) {
     const short = Math.random().toString(36).substring(2, 7);
+    URL.count().then((c) => {
+      URL.create({ URL_id: `${c + 1}`,
+        longURL: req.body.url,
+        shortURL: short,
+      })
+      .then(url => res.satatus(201).send(url))
+      .catch(err => res.status(400).send(err));
+    });
     URL_DB.push({
       longUrl: req.body.url,
       shortUrl: short,
